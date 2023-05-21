@@ -1,3 +1,4 @@
+
 name: Flutter Build
 
 on:
@@ -16,8 +17,12 @@ jobs:
     - name: Get Packages
       run: flutter pub get
     - name: Run Tests
-      run: | 
-        echo Pass 
-        # flutter test
+      run: flutter test
     - name: Build APK
       run: flutter build apk
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Test Client
+        path: build/app/outputs/apk/release/app-release.apk
+        
