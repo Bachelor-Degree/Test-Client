@@ -1,37 +1,21 @@
-# main.yml
-
-# 工作流程的名字
-name: Test, Build and Release apk
+name: Flutter Build
 
 on:
   push:
-    branches: 
-      - main 
-  pull_request: 
+    branches: [main]
 
 jobs:
-  process:
-    name: all process
+  build:
     runs-on: ubuntu-latest
-    # 这个任务的步骤
     steps:
-      # 拉取项目代码
-      - uses: actions/checkout@v2
-      # 建立 java 环境
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1.3.0
-        with:
-          java-version: "12.x"
-      # 建立 Flutter 环境
-      - name: Flutter action
-        uses: subosito/flutter-action@v1.1.1
-        with:
-          channel: "stable"
-          flutter-version: "1.12.x"
-      # 下载项目依赖
-      - run: flutter pub get
-      # 执行测试
-      - run: flutter test
-      # 打包 APK
-      - run: flutter build apk --release
-      
+    - uses: actions/checkout@v2
+    - name: Setup Flutter Environment
+      uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '3.3.10'
+    - name: Get Packages
+      run: flutter pub get
+    - name: Run Tests
+      run: flutter test
+    - name: Build APK
+      run: flutter build apk
