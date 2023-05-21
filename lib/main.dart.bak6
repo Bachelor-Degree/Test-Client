@@ -1,0 +1,207 @@
+
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+
+import 'pages/UserRoute.dart';
+import 'pages/DetailScreen.dart';
+import 'package:clients/pages/DicTable.dart';
+import 'package:clients/pages/LoginRoute.dart';
+import 'package:clients/pages/SearchRoute.dart';
+//import 'package:clients/pages/Update.dart';
+//import 'package:clients/pages/UpdateRoute.dart';
+//import 'package:clients/pages/InsertRoute.dart';
+//import 'package:clients/pages/InsertOrderRoute.dart';
+//import 'package:clients/pages/FormPage.dart';
+
+import 'package:clients/pages/ManageRoute.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Product List Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'Welcome'),
+    );
+  }
+}
+
+
+
+
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({
+    Key? key, 
+    this.Host="http://localhost", 
+    this.Port="8888", 
+    required this.title
+    }) : super(key: key);
+
+  final String title;
+  String Host; 
+  String Port; 
+
+  final Map<String, dynamic> info = {};
+  Map<String, dynamic> UserInfo = {"Table": "null", "ID": -1, "Name": "Guest", "t": "游客",};
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex = 0;
+  List<dynamic> _products = [];
+
+  Future<void> fetchProducts() async {
+    try {
+      final Dio dio = Dio();
+      final Response<dynamic> response =
+          await dio.get('${widget.Host}:${widget.Port}/service');
+      setState(() {
+        _products = jsonDecode(jsonEncode(response.data)) as List<dynamic>;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void _navigateToDetails(BuildContext context, dynamic detail) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailsScreen(detail: detail),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
+
+  var UserName = const Text( 
+    "游客", 
+    //widget.UserInfo["Name"],
+    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+  );
+
+  void showAlert(BuildContext context, String message, {String title="提示"})
+  {
+    showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: (() {
+                Navigator.of(context).pop();
+              }), 
+              child: Text("我理解~~~"))
+          ],
+        );
+      }
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: ListView.builder(
+        itemCount: _products.length,
+        itemBuilder: (context, index) {
+          return Card(
+            child: ListTile(
+                leading: const Icon(Icons.tab),
+                title: Text(_products[index]['Name'] as String),
+                subtitle: Text(_products[index]['Description'] as String),
+                trailing: Text('\$${_products[index]['Price']}'),
+                onTap: (() {
+                  _navigateToDetails(context, _products[index]);
+                })),
+          );
+        },
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      ),
+      drawer: //MyDrawer(UserInfo: widget.UserInfo,),
+          Drawer(
+        child: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 38.0),
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ClipOval(
+                        child: Image.network(
+                          "https://cdn3.iconfinder.com/data/icons/logos-brands-in-colors/512/pornhub-512.png",
+                          //"https://www.iconfinder.com/icons/7150904/download/svg/4096",
+                          width: 80,
+                        ),
+                      ),
+                    ), 
+                    UserName,
+
+                  ],
+                ),
+              ),
+              Expanded(
+                  child: ListView(
+                children: <Widget>[
+                  ListTile(
+                      leading: Icon(Icons.person),
+                      title: Text("我的主页"),
+                      onTap: () {
+                        if ("Guest" == widget.UserInfo["Name"]) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return LoginRoute();
+                          })).then((value) { 
+                            widget.UserInfo=value; 
+                            setState(() {
+                              UserName = Text(
+                                "${widget.UserInfo["table"]}-${widget.UserInfo["Name"]}", 
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              );
+                            });
+                          } );
+                        }
+                        else {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return UserRoute(UserInfo: widget.UserInfo,);
+                          })); //.then((value) => widget.UserInfo); 
+                        };
+                      }),
+
+                ],
+              ))
+            ],
+          ),
+        ),
+      ),
+      /*
+      floatingActionButton: FloatingActionButton(
+      */
+    );
+  }
+
+}
