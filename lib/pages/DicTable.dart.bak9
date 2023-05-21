@@ -1,0 +1,259 @@
+
+import 'dart:ui';
+
+import 'package:clients/pages/UpdateInfoPage.dart';
+import 'package:flutter/material.dart';
+
+void _defaultAction() {
+    print('默认的左侧按钮动作');
+}
+
+class DicTable extends StatefulWidget {
+
+  List<Map<String, dynamic>> dicList = [];
+  String title = "数据查询";
+  final String Table; 
+
+  DicTable({
+    Key? key, 
+    required this.Table, 
+    this.dicList = const [], 
+    this.title = '历史数据查询',
+    }) : super(key: key);
+
+  @override
+  _DicTableState createState() => _DicTableState(); 
+}
+
+class _DicTableState extends State<DicTable> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text( widget.title ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: DicTableBody(dicList: widget.dicList, context: context, Table: widget.Table,),
+      ),
+    );
+  }
+}
+
+
+class DicTableBody extends StatelessWidget {
+  final List<Map<String, dynamic>> dicList;
+  final String Table;
+  final Function leftButtonAction;
+  final Function rightButtonAction;
+  final BuildContext _context;
+  final bool isDisplayButton;
+
+  DicTableBody({
+    required this.dicList,
+    required this.Table,
+    required BuildContext context,
+    this.leftButtonAction = _defaultAction,
+    this.rightButtonAction = _defaultAction,
+    this.isDisplayButton = false, // 默认不显示按钮
+  }) : _context = context;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columns: _getColumns(),
+        rows: _getRows(),
+      ),
+    );
+  }
+
+  List<DataColumn> _getColumns() {
+    List<DataColumn> columns = [];
+    if (dicList.isNotEmpty) {
+      // 最左侧添加“修改”按钮
+      if (isDisplayButton) { // 判断是否显示按钮
+        columns.add(
+          DataColumn(
+            label: ElevatedButton(
+              onPressed: () {
+                leftButtonAction();
+              },
+              child: Text('修改'),
+            ),
+          ),
+        );
+      }
+      // 中间添加每个属性的列
+      dicList.first.keys.forEach((key) {
+        columns.add(DataColumn(label: Text(key)));
+      });
+      // 最右侧添加“删除”按钮
+      if (isDisplayButton) { // 判断是否显示按钮
+        columns.add(
+          DataColumn(
+            label: ElevatedButton(
+              onPressed: () {
+                rightButtonAction();
+              },
+              child: Text('删除'),
+            ),
+          ),
+        );
+      }
+    }
+    return columns;
+  }
+
+  List<DataRow> _getRows() {
+    return dicList.map((dictionary) {
+      List<DataCell> cells = [];
+      // 最左侧添加当前行的“修改”按钮
+      if (isDisplayButton) { // 判断是否显示按钮
+        cells.add(
+          DataCell(
+            ElevatedButton(
+              onPressed: () {
+                print('当前行数据：$dictionary');
+                print('当前行数据：${dictionary["ID"]}');
+                Navigator.push(
+                    _context,
+                    MaterialPageRoute(
+                      builder: ((context) {
+                        return UpdateInfoPage(
+                          WaitData: dictionary,
+                          Table: Table,
+                        );
+                      }),
+                    ));
+              },
+              child: Icon(Icons.edit),
+            ),
+          ),
+        );
+      }
+      // 添加每一行的属性
+      dictionary.entries.forEach((entry) {
+        cells.add(DataCell(Text('${entry.value}')));
+      });
+      // 最右侧添加当前行的“删除”按钮
+      if (isDisplayButton) { // 判断是否显示按钮
+        cells.add(
+          DataCell(
+            ElevatedButton(
+              onPressed: () {
+                print('即将删除当前行数据：$dictionary');
+              },
+              child: Icon(Icons.delete),
+            ),
+          ),
+        );
+      }
+      return DataRow(cells: cells);
+    }).toList();
+  }
+}
+
+/*
+class DicTableBody extends StatelessWidget {
+  final List<Map<String, dynamic>> dicList; 
+  final String Table; 
+  final Function leftButtonAction;
+  final Function rightButtonAction; 
+  final BuildContext _context; 
+
+  DicTableBody({
+    required this.dicList, 
+    required this.Table, 
+    required BuildContext context,
+    this.leftButtonAction = _defaultAction,
+    this.rightButtonAction = _defaultAction,
+  }) : _context = context;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columns: _getColumns(),
+        rows: _getRows(),
+      ),
+    );
+  }
+
+  List<DataColumn> _getColumns() {
+    List<DataColumn> columns = [];
+    if (dicList.isNotEmpty) {
+      // 最左侧添加“修改”按钮
+      columns.add(
+        DataColumn(
+          label: ElevatedButton(
+            onPressed: () {
+              leftButtonAction();
+            },
+            child: Text('修改'),
+          ),
+        ),
+      );
+      // 中间添加每个属性的列
+      dicList.first.keys.forEach((key) {
+        columns.add(DataColumn(label: Text(key)));
+      });
+      // 最右侧添加“删除”按钮
+      columns.add(
+        DataColumn(
+          label: ElevatedButton(
+            onPressed: () {
+              rightButtonAction();
+            },
+            child: Text('删除'),
+          ),
+        ),
+      );
+    } 
+    return columns;
+  }
+
+  List<DataRow> _getRows() {
+    return dicList.map((dictionary) {
+      List<DataCell> cells = [];
+      // 最左侧添加当前行的“修改”按钮
+      cells.add(
+        DataCell(
+          ElevatedButton(
+            onPressed: () {
+              print('当前行数据：$dictionary');
+              print('当前行数据：${dictionary["ID"]}'); 
+              Navigator.push( _context, 
+                MaterialPageRoute(
+                  builder: ((context) { return UpdateInfoPage( WaitData: dictionary, Table: Table,);} )
+                  //builder: ((context) { return UpdateRoute();} )
+                ));
+            },
+            child: Icon(Icons.edit),
+          ),
+        ),
+      );
+      // 添加每一行的属性
+      dictionary.entries.forEach((entry) {
+        cells.add(DataCell(Text('${entry.value}')));
+      });
+      // 最右侧添加当前行的“删除”按钮
+      cells.add(
+        DataCell(
+          ElevatedButton(
+            onPressed: () {
+              print('即将删除当前行数据：$dictionary');
+            },
+            child: Icon(Icons.delete),
+          ),
+        ),
+      );
+      return DataRow(cells: cells);
+    }).toList();
+  }
+
+}
+
+*/
