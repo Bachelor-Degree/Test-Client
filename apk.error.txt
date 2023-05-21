@@ -1,0 +1,71 @@
+
+Flutter Start
+Could not find an option named "release".
+
+
+Run 'flutter -h' (or 'flutter <command> -h') for available flutter commands and options.
+
+real    0m0.282s
+user    0m0.195s
+sys     0m0.096s
+
+Shell 已返回64
+
+请按 ENTER 或其它命令继续
+Flutter Start
+
+💪 Building with sound null safety 💪
+
+Checking the license for package SDK Patch Applier v4 in /usr/lib/android-sdk/licenses
+Warning: License for package SDK Patch Applier v4 not accepted.
+Checking the license for package Android Emulator in /usr/lib/android-sdk/licenses
+Warning: License for package Android Emulator not accepted.
+Checking the license for package Android SDK Tools in /usr/lib/android-sdk/licenses
+Warning: License for package Android SDK Tools not accepted.
+Checking the license for package Android SDK Build-Tools 30.0.3 in /usr/lib/android-sdk/licenses
+Warning: License for package Android SDK Build-Tools 30.0.3 not accepted.
+Checking the license for package Android SDK Platform 31 in /usr/lib/android-sdk/licenses
+Warning: License for package Android SDK Platform 31 not accepted.
+Checking the license for package SDK Patch Applier v4 in /usr/lib/android-sdk/licenses
+Warning: License for package SDK Patch Applier v4 not accepted.
+Checking the license for package Android Emulator in /usr/lib/android-sdk/licenses
+Warning: License for package Android Emulator not accepted.
+Checking the license for package Android SDK Tools in /usr/lib/android-sdk/licenses
+Warning: License for package Android SDK Tools not accepted.
+Checking the license for package Android SDK Build-Tools 30.0.3 in /usr/lib/android-sdk/licenses
+Warning: License for package Android SDK Build-Tools 30.0.3 not accepted.
+Checking the license for package Android SDK Platform 31 in /usr/lib/android-sdk/licenses
+Warning: License for package Android SDK Platform 31 not accepted.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Could not determine the dependencies of task ':app:lintVitalReportRelease'.
+> Failed to install the following Android SDK packages as some licences have not been accepted.
+     emulator Android Emulator
+     patcher;v4 SDK Patch Applier v4
+     platforms;android-31 Android SDK Platform 31
+     build-tools;30.0.3 Android SDK Build-Tools 30.0.3
+     tools Android SDK Tools
+  To build this project, accept the SDK license agreements and install the missing components using the Android Studio SDK Manager.
+  Alternatively, to transfer the license agreements from one workstation to another, see http://d.android.com/r/studio-ui/export-licenses.html
+
+  Using Android SDK: /usr/lib/android-sdk
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 23m 49s
+Running Gradle task 'assembleRelease'...                         1430.1s
+Gradle task assembleRelease failed with exit code 1
+
+real    23m50.638s
+user    0m17.020s
+sys     0m5.188s
+
+Shell 已返回1
+
