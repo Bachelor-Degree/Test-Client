@@ -50,14 +50,13 @@ jobs:
         path: build/web/ 
         
         
-  
   build_on_MacOS:
     name: Build ${{ matrix.target }}
     runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
-        target: ["ios --no-codesign", macos] 
+        target: ["ios --release --no-codesign", "macos --release"] 
     steps:
       - name: Set up JDK 11
         uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3.11.0
@@ -81,7 +80,7 @@ jobs:
       
       - name: Archive iOS
         run: | 
-          xcodebuild -archivePath ./build/ios/my-app.xcarchive -exportArchive -exportOptionsPlist exportOptions.plist >/dev/null 2>&1 && echo Good || echo Bad 
+          xcodebuild -archivePath ./build/ios/client.xcarchive -exportArchive -exportOptionsPlist exportOptions.plist >/dev/null 2>&1 && echo Good || echo Bad 
           # For iOS Archive
 
       - name: Upload Artifact iOS
@@ -93,11 +92,10 @@ jobs:
       - name: Upload Artifact MacOS
         uses: actions/upload-artifact@v2
         with:
-          name: Test Client MacOX
-          path: build/macos/Build/Products/Release/ #build/macos/ #apk/release/app-release.apk
+          name: Test Client MacOS
+          path: build/macos/Build/Products/Release/ 
           
           
-
   build_Windows:
     runs-on: windows-latest 
     steps:
@@ -113,7 +111,7 @@ jobs:
         run: flutter pub get
 
       - name: Build for Windows
-        run: flutter build windows
+        run: flutter build windows --release
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
