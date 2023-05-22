@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: ["apk --release"] #, web]
+        target: ["apk --release", "linux --release", web] #, web]
     steps:
     - uses: actions/checkout@v2
     - name: Setup Flutter Environment
@@ -21,6 +21,7 @@ jobs:
     - name: Get Packages
       run: | 
         # sudo apt-get install ninja-build
+        sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
         flutter pub get
     - name: Run Tests
       run: | 
@@ -29,60 +30,25 @@ jobs:
     - name: Build APK
       run: | 
         flutter build ${{ matrix.target }}
-        flutter build apk
-    - name: Upload Artifact
+        # flutter build apk
+    - name: Upload Artifact APK
       uses: actions/upload-artifact@v2
       with:
         name: Test Client APK
         path: build/app/outputs/apk/release/app-release.apk
+        
+    - name: Upload Artifact Linux
+      uses: actions/upload-artifact@v2
+      with:
+        name: Test Client Linux
+        path: build/linux/x64/release/bundle/
+        
+    - name: Upload Artifact Web
+      uses: actions/upload-artifact@v2
+      with:
+        name: Test Client Web
+        path: build/web/ 
   
-  build_Linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Flutter SDK
-        uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '3.3.10' 
-
-      - name: Get dependencies
-        run: |
-          sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
-          flutter pub get
-
-      - name: Build for Linux
-        run: flutter build linux --release
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Test Client Linux 
-          path: build/linux/x64/release/bundle/ #build/linux/release/bundle/
-  
-  build_Web:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Flutter SDK
-        uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '3.3.10' 
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Build for Web
-        run: flutter build web --release
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Test Client Web 
-          path: build/web/ 
 
   
   build_MacOS:
