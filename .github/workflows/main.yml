@@ -6,12 +6,12 @@ on:
     branches: [main]
 
 jobs:
-  build_APK:
+  build_Linux_APK:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        target: ["apk --release", "linux --release", web]
+        target: ["apk --release", "linux", web]
     steps:
     - uses: actions/checkout@v2
     - name: Setup Flutter Environment
@@ -19,7 +19,9 @@ jobs:
       with:
         flutter-version: '3.3.10'
     - name: Get Packages
-      run: flutter pub get
+      run: | 
+        sudo apt-get install ninja-build
+        flutter pub get
     - name: Run Tests
       run: | 
         echo Pass
@@ -55,7 +57,7 @@ jobs:
       - run: flutter config --enable-macos-desktop
       - run: flutter doctor -v
 
-      # Checkout gallery code and get packages.
+      # Checkout code and get packages.
       - name: Checkout code
         uses: actions/checkout@v2 #8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - run: flutter pub get
@@ -66,4 +68,29 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Test Client on MacOX
-          path: build/app/outputs/ #apk/release/app-release.apk
+          path: build/macos/Build/Products/Release/ #build/macos/ #apk/release/app-release.apk
+          
+
+  build_Windows:
+    runs-on: windows-latest # 可以选择 macOS 或 Ubuntu
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '3.3.10'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build for Windows
+        run: flutter build windows
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Test Client on Windows
+          path: build/windows/
+
