@@ -1,4 +1,6 @@
-# clients
+# Clients 
+
+
 
 A new Flutter project.
 
@@ -14,7 +16,7 @@ A new Flutter project.
 
 
 
-## 一. Getting Started（客户端）
+## 一. 客户端
 
 项目地址：[Bachelor-Degree/Test-Client](https://github.com/Bachelor-Degree/Test-Client)
 
@@ -22,9 +24,17 @@ A new Flutter project.
 
 ### 1.1 使用
 
+#### 1.1.1 登录系统 
+
 通过左侧设置按钮，点击“我的主页”进行登录。
 
+默认密码是 Password，加密已移除。
+
+#### 1.1.2 网络问题 
+
 注意：运行时可能需要更改 网络设置（左侧设置按钮 -> 网络设置 -> 输入 Host 和 Post -> 确定），看到 “成功设置：域名:端口” 即可。
+
+其他部分自行参考文档（一晚上搞出来的小玩具要什么说明书？）
 
 
 
@@ -78,7 +88,11 @@ A new Flutter project.
 
 ## 三. 客户端自行编译 
 
+不想写！不想写！不想写！！！
 
+
+
+源码结构就不说了，入口 lib/main.dart。搞不懂 $1+1=2$ 和 $ 1+2=3 $ ，显然就难以理解微积分（P.S. 1+2=2+1 同属于一个阿贝尔群这种大仙就不提了哈 ）
 
 ### 3.1 Action 自动编译 
 
@@ -107,5 +121,5 @@ A new Flutter project.
 
 
 
-## 可以了！不想写了！
+## 可以了！写什么啊！！！
 
